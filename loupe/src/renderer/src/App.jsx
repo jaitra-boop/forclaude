@@ -4,21 +4,36 @@ import BottomNav from './components/BottomNav'
 import HomeView from './views/HomeView'
 import CalendarView from './views/CalendarView'
 import ProfileView from './views/ProfileView'
-
-const BG = '#FAF7F2'
-const TEXT_PRIMARY = '#3D3530'
-const TEXT_MUTED = '#8A7D72'
-const SAGE = '#7BB8A0'
+import {
+  BG_BASE, BG_SURFACE, BG_GLASS, BORDER_SUBTLE,
+  TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED,
+  GRAD_PRIMARY, GRAD_SECONDARY,
+  PURPLE, BLUE,
+  RADIUS_LG, RADIUS_PILL,
+  SHADOW_MD, FONT_BASE
+} from './theme'
 
 function Welcome({ onStart }) {
   return (
     <div style={styles.welcome}>
+      {/* Ambient glow orbs */}
+      <div style={styles.orb1} />
+      <div style={styles.orb2} />
+
       <div style={styles.welcomeContent}>
-        <div style={styles.logo}>⌕</div>
+        <div style={styles.logoWrap}>
+          <span style={styles.logoSymbol}>⌕</span>
+        </div>
         <h1 style={styles.welcomeTitle}>Loupe</h1>
-        <p style={styles.welcomeSub}>A daily micro-learning ritual for UX designers navigating the AI era.</p>
-        <p style={styles.welcomeDesc}>One word. One lesson. One game. One link. Every day.</p>
-        <button style={styles.startBtn} onClick={onStart}>Start learning</button>
+        <p style={styles.welcomeSub}>
+          A daily micro-learning ritual for UX designers navigating the AI era.
+        </p>
+        <p style={styles.welcomeDesc}>
+          One word · One lesson · One game · One link
+        </p>
+        <button style={styles.startBtn} onClick={onStart}>
+          Start learning
+        </button>
       </div>
     </div>
   )
@@ -46,22 +61,16 @@ export default function App() {
     init()
   }, [])
 
-  async function handleStart() {
-    setWelcomed(true)
-  }
-
   function handleDataUpdate(newData) {
     setAppData(newData)
   }
 
-  if (!ready) {
-    return <div style={{ ...styles.app, background: BG }} />
-  }
+  if (!ready) return <div style={{ width: 420, height: 720, background: BG_BASE }} />
 
   if (!welcomed) {
     return (
       <div style={styles.app}>
-        <Welcome onStart={handleStart} />
+        <Welcome onStart={() => setWelcomed(true)} />
       </div>
     )
   }
@@ -83,19 +92,11 @@ export default function App() {
         onClose={() => window.loupe.closeWindow()}
         onMinimize={() => window.loupe.minimizeWindow()}
       />
-
       <div style={styles.content}>
-        {tab === 'home' && (
-          <HomeView mode={mode} appData={appData} onDataUpdate={handleDataUpdate} />
-        )}
-        {tab === 'calendar' && (
-          <CalendarView appData={appData} />
-        )}
-        {tab === 'profile' && (
-          <ProfileView appData={appData} />
-        )}
+        {tab === 'home'     && <HomeView mode={mode} appData={appData} onDataUpdate={handleDataUpdate} />}
+        {tab === 'calendar' && <CalendarView appData={appData} />}
+        {tab === 'profile'  && <ProfileView appData={appData} />}
       </div>
-
       <BottomNav tab={tab} onChange={setTab} />
     </div>
   )
@@ -107,9 +108,10 @@ const styles = {
     height: '720px',
     display: 'flex',
     flexDirection: 'column',
-    background: BG,
+    background: BG_BASE,
     overflow: 'hidden',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontFamily: FONT_BASE,
+    position: 'relative'
   },
   content: {
     flex: 1,
@@ -117,56 +119,102 @@ const styles = {
     display: 'flex',
     flexDirection: 'column'
   },
+  // ── Welcome ──────────────────────────────────────────────
   welcome: {
     width: '420px',
     height: '720px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: BG
+    background: BG_BASE,
+    position: 'relative',
+    overflow: 'hidden',
+    fontFamily: FONT_BASE
+  },
+  orb1: {
+    position: 'absolute',
+    width: '280px',
+    height: '280px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(123,47,247,0.35) 0%, transparent 70%)',
+    top: '60px',
+    left: '-60px',
+    pointerEvents: 'none'
+  },
+  orb2: {
+    position: 'absolute',
+    width: '220px',
+    height: '220px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(33,150,243,0.3) 0%, transparent 70%)',
+    bottom: '80px',
+    right: '-40px',
+    pointerEvents: 'none'
   },
   welcomeContent: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '14px',
+    gap: '12px',
     padding: '32px',
-    textAlign: 'center'
+    textAlign: 'center',
+    position: 'relative',
+    zIndex: 1
   },
-  logo: {
-    fontSize: '56px',
-    lineHeight: 1,
-    marginBottom: '8px'
+  logoWrap: {
+    width: '72px',
+    height: '72px',
+    borderRadius: '22px',
+    background: GRAD_PRIMARY,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '8px',
+    boxShadow: '0 0 32px rgba(123,47,247,0.5)'
+  },
+  logoSymbol: {
+    fontSize: '36px',
+    color: '#fff',
+    lineHeight: 1
   },
   welcomeTitle: {
-    fontSize: '36px',
+    fontSize: '38px',
     fontWeight: '800',
     color: TEXT_PRIMARY,
-    letterSpacing: '-1px',
-    margin: 0
+    letterSpacing: '-1.5px',
+    margin: 0,
+    background: GRAD_GLOW,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text'
   },
   welcomeSub: {
-    fontSize: '16px',
-    color: TEXT_PRIMARY,
-    lineHeight: '1.5',
-    maxWidth: '280px',
+    fontSize: '15px',
+    color: TEXT_SECONDARY,
+    lineHeight: '1.55',
+    maxWidth: '270px',
     margin: 0
   },
   welcomeDesc: {
-    fontSize: '13px',
+    fontSize: '12px',
     color: TEXT_MUTED,
+    letterSpacing: '0.3px',
     margin: 0
   },
   startBtn: {
-    background: TEXT_PRIMARY,
-    color: BG,
+    background: GRAD_PRIMARY,
+    color: '#fff',
     border: 'none',
-    borderRadius: '12px',
-    padding: '14px 40px',
+    borderRadius: RADIUS_PILL,
+    padding: '14px 48px',
     fontSize: '15px',
     fontWeight: '600',
     cursor: 'pointer',
-    marginTop: '16px',
+    marginTop: '20px',
+    boxShadow: '0 4px 24px rgba(123,47,247,0.5)',
     letterSpacing: '0.2px'
   }
 }
+
+// Re-export for welcome gradient reference
+const GRAD_GLOW = 'linear-gradient(135deg, #B06EFA 0%, #7B2FF7 40%, #2196F3 100%)'

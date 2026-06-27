@@ -1,23 +1,24 @@
 import React from 'react'
 import Jar from './Jar'
 import ModeToggle from './ModeToggle'
-
-const BG = '#FAF7F2'
-const TEXT_PRIMARY = '#3D3530'
-const TEXT_MUTED = '#8A7D72'
-const BORDER = '#E8DDD0'
+import {
+  BG_BASE, BORDER_SUBTLE, TEXT_PRIMARY, TEXT_MUTED,
+  TEXT_ACCENT, RADIUS_SM, FONT_BASE
+} from '../theme'
 
 export default function Header({ tab, mode, onModeChange, jarPct, jarCracks, jarGlowing, onClose, onMinimize }) {
   const tabLabels = { home: 'Today', calendar: 'Calendar', profile: 'Profile' }
 
   return (
     <div style={styles.header}>
-      <div style={styles.dragArea}>
+      {/* Window drag region */}
+      <div style={styles.dragRow}>
         <div style={styles.left}>
           <span style={styles.appName}>Loupe</span>
-          <span style={styles.separator}>·</span>
+          <span style={styles.dot}>·</span>
           <span style={styles.tabName}>{tabLabels[tab] || ''}</span>
         </div>
+
         <div style={styles.right}>
           {tab === 'home' && (
             <ModeToggle mode={mode} onChange={onModeChange} />
@@ -25,23 +26,37 @@ export default function Header({ tab, mode, onModeChange, jarPct, jarCracks, jar
           <Jar pct={jarPct} cracks={jarCracks} glowing={jarGlowing} />
         </div>
       </div>
-      <div style={styles.windowControls}>
-        <button style={styles.controlBtn} onClick={onMinimize} title="Minimize">―</button>
-        <button style={{ ...styles.controlBtn, ...styles.closeBtn }} onClick={onClose} title="Close">×</button>
+
+      {/* Frameless window controls – top-right */}
+      <div style={styles.controls}>
+        <button style={styles.ctrlBtn} onClick={onMinimize} title="Minimize">
+          <svg width="8" height="2" viewBox="0 0 8 2"><rect width="8" height="2" rx="1" fill="rgba(255,255,255,0.5)" /></svg>
+        </button>
+        <button style={styles.ctrlBtn} onClick={onClose} title="Close">
+          <svg width="8" height="8" viewBox="0 0 8 8">
+            <line x1="0" y1="0" x2="8" y2="8" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="8" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
+
+      {/* Bottom separator */}
+      <div style={styles.separator} />
     </div>
   )
 }
 
 const styles = {
   header: {
-    background: BG,
-    borderBottom: `1px solid ${BORDER}`,
-    padding: '12px 16px 10px',
+    background: 'rgba(9,11,24,0.92)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    padding: '14px 16px 12px',
     position: 'relative',
-    WebkitAppRegion: 'drag'
+    WebkitAppRegion: 'drag',
+    fontFamily: FONT_BASE
   },
-  dragArea: {
+  dragRow: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between'
@@ -57,7 +72,7 @@ const styles = {
     color: TEXT_PRIMARY,
     letterSpacing: '-0.3px'
   },
-  separator: {
+  dot: {
     color: TEXT_MUTED,
     fontSize: '14px'
   },
@@ -72,29 +87,32 @@ const styles = {
     gap: '12px',
     WebkitAppRegion: 'no-drag'
   },
-  windowControls: {
+  controls: {
     position: 'absolute',
-    top: '8px',
-    right: '8px',
+    top: '10px',
+    right: '10px',
     display: 'flex',
-    gap: '4px',
+    gap: '6px',
     WebkitAppRegion: 'no-drag'
   },
-  controlBtn: {
-    width: '22px',
-    height: '22px',
+  ctrlBtn: {
+    width: '20px',
+    height: '20px',
     borderRadius: '50%',
-    border: 'none',
-    background: BORDER,
-    color: TEXT_MUTED,
+    border: '1px solid rgba(255,255,255,0.12)',
+    background: 'rgba(255,255,255,0.06)',
     cursor: 'pointer',
-    fontSize: '13px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    lineHeight: 1
+    padding: 0
   },
-  closeBtn: {
-    fontSize: '16px'
+  separator: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '1px',
+    background: 'linear-gradient(90deg, transparent, rgba(123,47,247,0.4), rgba(33,150,243,0.4), transparent)'
   }
 }

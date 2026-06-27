@@ -1,99 +1,135 @@
 import React, { useState } from 'react'
+import {
+  BG_SURFACE, BORDER_SUBTLE,
+  GRAD_PRIMARY, GRAD_SECONDARY, GRAD_TEAL,
+  TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED, TEXT_ACCENT,
+  SUCCESS, AMBER,
+  RADIUS_LG, RADIUS_MD, RADIUS_SM, RADIUS_PILL,
+  SHADOW_MD, FONT_BASE
+} from '../../theme'
 
-const CARD_BG = '#FFFFFF'
-const ACCENT = '#7BB8A0'
-const TEXT_PRIMARY = '#3D3530'
-const TEXT_MUTED = '#8A7D72'
-const BORDER = '#E8DDD0'
-const DROP_BADGE = '#E8A020'
-const CATEGORY_COLORS = {
-  Foundations: '#7BB8A0',
-  Tools: '#C48A5C',
-  Workflow: '#7B9EC4',
-  Industry: '#C47B9E'
+const CAT_STYLES = {
+  Foundations: { grad: 'linear-gradient(135deg,#7B2FF7,#2196F3)', glow: 'rgba(123,47,247,0.3)' },
+  Tools:       { grad: 'linear-gradient(135deg,#F72585,#7B2FF7)', glow: 'rgba(247,37,133,0.3)' },
+  Workflow:    { grad: 'linear-gradient(135deg,#00C6FF,#0072FF)', glow: 'rgba(0,198,255,0.3)' },
+  Industry:    { grad: 'linear-gradient(135deg,#F59E0B,#F72585)', glow: 'rgba(245,158,11,0.3)' }
 }
 
 export default function LessonCard({ title, category, read_time, content, takeaway, read, onRead }) {
   const [expanded, setExpanded] = useState(false)
-  const catColor = CATEGORY_COLORS[category] || TEXT_MUTED
+  const cat = CAT_STYLES[category] || CAT_STYLES.Foundations
 
   return (
     <div style={styles.wrapper}>
-      <div style={styles.badge}>Lesson · +1 drop</div>
+      <div style={styles.badge}>
+        <span style={styles.badgeDot} />
+        Lesson · +1 drop
+      </div>
+
       <div style={styles.card}>
-        <div style={styles.meta}>
-          <span style={{ ...styles.category, color: catColor, borderColor: catColor }}>{category}</span>
-          <span style={styles.readTime}>{read_time} min read</span>
+        <div style={styles.accentBar} />
+
+        <div style={styles.body}>
+          {/* Meta row */}
+          <div style={styles.metaRow}>
+            <span style={{ ...styles.catPill, background: cat.grad, boxShadow: `0 2px 12px ${cat.glow}` }}>
+              {category}
+            </span>
+            <span style={styles.readTime}>{read_time} min read</span>
+          </div>
+
+          <div style={styles.title}>{title}</div>
+
+          {!expanded && (
+            <button style={styles.expandBtn} onClick={() => setExpanded(true)}>
+              Read lesson
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ marginLeft: '6px' }}>
+                <path d="M3 5l4 4 4-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+
+          {expanded && (
+            <>
+              <div style={styles.content}>
+                {content.map((para, i) => (
+                  <p key={i} style={styles.para}>{para}</p>
+                ))}
+              </div>
+
+              <div style={styles.takeawayBox}>
+                <div style={styles.takeawayLabel}>Takeaway</div>
+                <div style={styles.takeaway}>{takeaway}</div>
+              </div>
+
+              {!read ? (
+                <button style={styles.readBtn} onClick={onRead}>
+                  Mark as read · +1 drop
+                </button>
+              ) : (
+                <div style={styles.readConfirm}>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ marginRight: '6px' }}>
+                    <path d="M2 7l4 4 6-7" stroke={SUCCESS} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Read today
+                </div>
+              )}
+            </>
+          )}
         </div>
-        <div style={styles.title}>{title}</div>
-
-        {!expanded && (
-          <button style={styles.expandBtn} onClick={() => setExpanded(true)}>
-            Read lesson
-          </button>
-        )}
-
-        {expanded && (
-          <>
-            <div style={styles.content}>
-              {content.map((para, i) => (
-                <p key={i} style={styles.para}>{para}</p>
-              ))}
-            </div>
-            <div style={styles.takeawayBox}>
-              <div style={styles.takeawayLabel}>Takeaway</div>
-              <div style={styles.takeaway}>{takeaway}</div>
-            </div>
-            {!read ? (
-              <button style={styles.readBtn} onClick={onRead}>
-                Mark as read · +1 drop
-              </button>
-            ) : (
-              <div style={styles.readConfirm}>✓ Read today</div>
-            )}
-          </>
-        )}
       </div>
     </div>
   )
 }
 
 const styles = {
-  wrapper: { display: 'flex', flexDirection: 'column', gap: '6px' },
+  wrapper: { display: 'flex', flexDirection: 'column', gap: '7px', fontFamily: FONT_BASE },
+
   badge: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
     fontSize: '11px',
-    color: DROP_BADGE,
     fontWeight: '600',
+    color: AMBER,
     letterSpacing: '0.4px',
     textTransform: 'uppercase'
   },
+  badgeDot: {
+    width: '6px', height: '6px', borderRadius: '50%',
+    background: AMBER, boxShadow: `0 0 8px ${AMBER}`
+  },
+
   card: {
-    background: CARD_BG,
-    border: `1px solid ${BORDER}`,
-    borderRadius: '14px',
-    padding: '18px 20px',
+    background: BG_SURFACE,
+    border: `1px solid ${BORDER_SUBTLE}`,
+    borderRadius: RADIUS_LG,
+    overflow: 'hidden',
+    boxShadow: SHADOW_MD
+  },
+  accentBar: {
+    height: '2px',
+    background: GRAD_PRIMARY
+  },
+  body: {
+    padding: '16px 18px 18px',
     display: 'flex',
     flexDirection: 'column',
     gap: '12px'
   },
-  meta: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px'
-  },
-  category: {
-    fontSize: '11px',
+
+  metaRow: { display: 'flex', alignItems: 'center', gap: '10px' },
+  catPill: {
+    fontSize: '10px',
     fontWeight: '700',
-    letterSpacing: '0.4px',
+    letterSpacing: '0.5px',
     textTransform: 'uppercase',
-    border: '1px solid',
-    borderRadius: '20px',
-    padding: '2px 8px'
+    color: '#fff',
+    borderRadius: RADIUS_PILL,
+    padding: '3px 10px'
   },
-  readTime: {
-    fontSize: '11px',
-    color: TEXT_MUTED
-  },
+  readTime: { fontSize: '11px', color: TEXT_MUTED },
+
   title: {
     fontSize: '16px',
     fontWeight: '700',
@@ -101,63 +137,54 @@ const styles = {
     lineHeight: '1.35',
     letterSpacing: '-0.2px'
   },
+
   expandBtn: {
-    background: '#F0EBE3',
-    border: 'none',
-    borderRadius: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(123,47,247,0.15)',
+    border: '1px solid rgba(123,47,247,0.25)',
+    borderRadius: RADIUS_MD,
     padding: '10px',
     fontSize: '13px',
     fontWeight: '600',
-    color: TEXT_PRIMARY,
-    cursor: 'pointer',
-    textAlign: 'center'
+    color: TEXT_ACCENT,
+    cursor: 'pointer'
   },
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px'
-  },
-  para: {
-    fontSize: '14px',
-    color: TEXT_PRIMARY,
-    lineHeight: '1.6',
-    margin: 0
-  },
+
+  content: { display: 'flex', flexDirection: 'column', gap: '10px' },
+  para: { fontSize: '14px', color: TEXT_SECONDARY, lineHeight: '1.65', margin: 0 },
+
   takeawayBox: {
-    background: '#F5F9F7',
-    border: `1px solid ${ACCENT}`,
-    borderRadius: '10px',
+    background: 'rgba(0,212,161,0.08)',
+    border: '1px solid rgba(0,212,161,0.2)',
+    borderRadius: RADIUS_MD,
     padding: '12px 14px'
   },
   takeawayLabel: {
-    fontSize: '10px',
-    fontWeight: '700',
-    color: ACCENT,
-    letterSpacing: '0.5px',
-    textTransform: 'uppercase',
-    marginBottom: '4px'
+    fontSize: '10px', fontWeight: '700', color: '#00D4A1',
+    letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '5px'
   },
-  takeaway: {
-    fontSize: '13px',
-    color: TEXT_PRIMARY,
-    lineHeight: '1.5',
-    fontStyle: 'italic'
-  },
+  takeaway: { fontSize: '13px', color: TEXT_SECONDARY, lineHeight: '1.55', fontStyle: 'italic' },
+
   readBtn: {
-    background: ACCENT,
+    background: GRAD_PRIMARY,
     border: 'none',
-    borderRadius: '8px',
-    padding: '11px',
+    borderRadius: RADIUS_MD,
+    padding: '12px',
     fontSize: '13px',
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#fff',
     cursor: 'pointer',
-    textAlign: 'center'
+    textAlign: 'center',
+    boxShadow: '0 4px 16px rgba(123,47,247,0.4)'
   },
   readConfirm: {
-    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     fontSize: '13px',
-    color: ACCENT,
+    color: SUCCESS,
     fontWeight: '600'
   }
 }

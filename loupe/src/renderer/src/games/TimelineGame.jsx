@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { TIMELINE_DATA } from '../data/games'
-
-const TEXT_PRIMARY = '#3D3530'
-const TEXT_MUTED = '#8A7D72'
-const BORDER = '#E8DDD0'
-const ACCENT = '#7BB8A0'
-const ERROR = '#D4544A'
+import {
+  BORDER_SUBTLE,
+  TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED, TEXT_ACCENT,
+  SUCCESS, ERROR,
+  RADIUS_MD, RADIUS_SM, RADIUS_PILL, FONT_BASE
+} from '../theme'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -23,18 +23,16 @@ export default function TimelineGame({ onComplete }) {
 
   function move(idx, dir) {
     if (submitted) return
-    const newItems = [...items]
-    const target = idx + dir
-    if (target < 0 || target >= newItems.length) return
-    ;[newItems[idx], newItems[target]] = [newItems[target], newItems[idx]]
-    setItems(newItems)
+    const t = idx + dir
+    if (t < 0 || t >= items.length) return
+    const n = [...items];
+    [n[idx], n[t]] = [n[t], n[idx]]
+    setItems(n)
   }
 
-  function submitOrder() {
+  function submit() {
     let correct = 0
-    items.forEach((item, i) => {
-      if (item.order === i + 1) correct++
-    })
+    items.forEach((item, i) => { if (item.order === i + 1) correct++ })
     setScore(correct)
     setSubmitted(true)
     setTimeout(onComplete, 1500)
@@ -43,37 +41,41 @@ export default function TimelineGame({ onComplete }) {
   return (
     <div style={styles.game}>
       <div style={styles.header}>
-        <div style={styles.title}>The Timeline</div>
-        {!submitted && <div style={styles.hint}>Use arrows to reorder</div>}
-        {submitted && <div style={styles.scoreLabel}>{score}/{items.length} correct</div>}
+        <span style={styles.title}>The Timeline</span>
+        {!submitted
+          ? <span style={styles.hint}>Use arrows to reorder</span>
+          : <span style={styles.scoreLabel}>{score}/{items.length} correct</span>
+        }
       </div>
 
       <div style={styles.list}>
         {items.map((item, idx) => {
-          const isCorrect = submitted && item.order === idx + 1
-          const isWrong = submitted && item.order !== idx + 1
+          const ok  = submitted && item.order === idx + 1
+          const bad = submitted && item.order !== idx + 1
           return (
             <div
               key={item.year}
               style={{
                 ...styles.item,
-                borderColor: isCorrect ? ACCENT : (isWrong ? ERROR : BORDER),
-                background: isCorrect ? '#F5F9F7' : (isWrong ? '#FDF5F5' : '#FFFFFF')
+                border: `1px solid ${ok ? 'rgba(0,212,161,0.4)' : bad ? 'rgba(255,77,106,0.4)' : BORDER_SUBTLE}`,
+                background: ok ? 'rgba(0,212,161,0.08)' : bad ? 'rgba(255,77,106,0.08)' : 'rgba(255,255,255,0.04)'
               }}
             >
-              <div style={styles.itemContent}>
-                <span style={styles.year}>{item.year}</span>
+              <div style={styles.itemLeft}>
+                <span style={{
+                  ...styles.year,
+                  color: ok ? '#00D4A1' : bad ? '#FF4D6A' : TEXT_ACCENT
+                }}>{item.year}</span>
                 <span style={styles.event}>{item.event}</span>
               </div>
-              {!submitted && (
+              {!submitted ? (
                 <div style={styles.arrows}>
-                  <button style={styles.arrow} onClick={() => move(idx, -1)} disabled={idx === 0}>▲</button>
-                  <button style={styles.arrow} onClick={() => move(idx, 1)} disabled={idx === items.length - 1}>▼</button>
+                  <button style={styles.arr} onClick={() => move(idx, -1)} disabled={idx === 0}>▲</button>
+                  <button style={styles.arr} onClick={() => move(idx, 1)} disabled={idx === items.length - 1}>▼</button>
                 </div>
-              )}
-              {submitted && (
+              ) : (
                 <span style={{ fontSize: '16px', marginLeft: '8px' }}>
-                  {isCorrect ? '✓' : '✗'}
+                  {ok ? '✓' : '✗'}
                 </span>
               )}
             </div>
@@ -82,7 +84,7 @@ export default function TimelineGame({ onComplete }) {
       </div>
 
       {!submitted && (
-        <button style={styles.submitBtn} onClick={submitOrder}>
+        <button style={styles.submitBtn} onClick={submit}>
           Submit order
         </button>
       )}
@@ -91,46 +93,34 @@ export default function TimelineGame({ onComplete }) {
 }
 
 const styles = {
-  game: { width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' },
+  game: { width: '100%', display: 'flex', flexDirection: 'column', gap: '10px', fontFamily: FONT_BASE },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   title: { fontSize: '15px', fontWeight: '700', color: TEXT_PRIMARY },
   hint: { fontSize: '11px', color: TEXT_MUTED },
-  scoreLabel: { fontSize: '13px', fontWeight: '700', color: ACCENT },
+  scoreLabel: { fontSize: '13px', fontWeight: '700', color: '#00D4A1' },
+
   list: { display: 'flex', flexDirection: 'column', gap: '6px' },
   item: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px 12px',
-    border: '1.5px solid',
-    borderRadius: '10px',
-    transition: 'all 0.2s'
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '10px 12px', borderRadius: RADIUS_MD, transition: 'all 0.2s'
   },
-  itemContent: { display: 'flex', gap: '10px', alignItems: 'flex-start', flex: 1 },
-  year: { fontSize: '13px', fontWeight: '700', color: ACCENT, minWidth: '38px' },
-  event: { fontSize: '12px', color: TEXT_PRIMARY, lineHeight: '1.4' },
+  itemLeft: { display: 'flex', gap: '10px', alignItems: 'flex-start', flex: 1 },
+  year: { fontSize: '12px', fontWeight: '800', minWidth: '36px', fontVariantNumeric: 'tabular-nums' },
+  event: { fontSize: '12px', color: TEXT_SECONDARY, lineHeight: '1.4' },
+
   arrows: { display: 'flex', flexDirection: 'column', gap: '2px', marginLeft: '8px' },
-  arrow: {
-    background: '#F0EBE3',
-    border: 'none',
-    borderRadius: '4px',
-    width: '22px',
-    height: '18px',
-    fontSize: '10px',
-    cursor: 'pointer',
-    color: TEXT_PRIMARY,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+  arr: {
+    background: 'rgba(255,255,255,0.07)', border: `1px solid ${BORDER_SUBTLE}`,
+    borderRadius: '5px', width: '24px', height: '20px',
+    fontSize: '10px', cursor: 'pointer', color: TEXT_SECONDARY,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.15s'
   },
+
   submitBtn: {
-    background: TEXT_PRIMARY,
-    color: '#FAF7F2',
-    border: 'none',
-    borderRadius: '8px',
-    padding: '11px',
-    fontSize: '13px',
-    fontWeight: '600',
-    cursor: 'pointer'
+    background: 'linear-gradient(135deg,#7B2FF7,#2196F3)',
+    border: 'none', borderRadius: RADIUS_MD,
+    padding: '12px', fontSize: '13px', fontWeight: '600', color: '#fff', cursor: 'pointer',
+    boxShadow: '0 4px 16px rgba(123,47,247,0.35)'
   }
 }

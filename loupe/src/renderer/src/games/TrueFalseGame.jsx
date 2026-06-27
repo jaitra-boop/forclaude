@@ -1,46 +1,32 @@
 import React, { useState } from 'react'
 import { TRUEFALSE_DATA } from '../data/games'
-
-const TEXT_PRIMARY = '#3D3530'
-const TEXT_MUTED = '#8A7D72'
-const BORDER = '#E8DDD0'
-const ACCENT = '#7BB8A0'
-const AMBER = '#E8A020'
-const BLUE = '#7B9EC4'
-const OPTIONS = ['True', 'False', 'It Depends']
+import {
+  BORDER_SUBTLE,
+  TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED,
+  SUCCESS, ERROR,
+  RADIUS_MD, RADIUS_SM, RADIUS_PILL, FONT_BASE
+} from '../theme'
 
 const setIndex = Math.floor(Date.now() / 86400000) % TRUEFALSE_DATA.length
 const STATEMENTS = TRUEFALSE_DATA[setIndex].statements
 
-function OptionButton({ label, chosen, correct, revealed, onClick }) {
-  let bg = '#F0EBE3'
-  let color = TEXT_PRIMARY
-  if (revealed && label === correct) { bg = ACCENT; color = '#FFF' }
-  else if (revealed && label === chosen && label !== correct) { bg = '#D4544A'; color = '#FFF' }
-  else if (!revealed && chosen === label) { bg = TEXT_PRIMARY; color = '#FAF7F2' }
-
-  return (
-    <button
-      style={{ ...styles.option, background: bg, color }}
-      onClick={!revealed ? onClick : undefined}
-      disabled={revealed}
-    >
-      {label}
-    </button>
-  )
+const OPT_STYLES = {
+  True:       { grad: 'linear-gradient(135deg,#00D4A1,#0072FF)', glow: 'rgba(0,212,161,0.35)' },
+  False:      { grad: 'linear-gradient(135deg,#FF4D6A,#F72585)', glow: 'rgba(255,77,106,0.35)' },
+  'It Depends': { grad: 'linear-gradient(135deg,#F59E0B,#F72585)', glow: 'rgba(245,158,11,0.35)' }
 }
 
 export default function TrueFalseGame({ onComplete }) {
   const [answers, setAnswers] = useState({})
   const [revealed, setRevealed] = useState({})
-  const total = STATEMENTS.length
 
-  function choose(stmtIdx, option) {
-    if (revealed[stmtIdx]) return
-    setAnswers(a => ({ ...a, [stmtIdx]: option }))
-    setRevealed(r => ({ ...r, [stmtIdx]: true }))
-    const newRevealed = { ...revealed, [stmtIdx]: true }
-    if (Object.keys(newRevealed).length === total) {
+  function choose(idx, option) {
+    if (revealed[idx]) return
+    const newA = { ...answers, [idx]: option }
+    const newR = { ...revealed, [idx]: true }
+    setAnswers(newA)
+    setRevealed(newR)
+    if (Object.keys(newR).length === STATEMENTS.length) {
       setTimeout(onComplete, 1000)
     }
   }
@@ -48,59 +34,79 @@ export default function TrueFalseGame({ onComplete }) {
   return (
     <div style={styles.game}>
       <div style={styles.header}>
-        <div style={styles.title}>True / False / It Depends</div>
-        <div style={styles.progress}>{Object.keys(revealed).length}/{total}</div>
+        <span style={styles.title}>True / False / It Depends</span>
+        <span style={styles.prog}>{Object.keys(revealed).length}/{STATEMENTS.length}</span>
       </div>
 
-      {STATEMENTS.map((stmt, i) => (
-        <div key={i} style={styles.stmt}>
-          <div style={styles.stmtText}>{stmt.text}</div>
-          <div style={styles.options}>
-            {OPTIONS.map(opt => (
-              <OptionButton
-                key={opt}
-                label={opt}
-                chosen={answers[i]}
-                correct={stmt.answer}
-                revealed={!!revealed[i]}
-                onClick={() => choose(i, opt)}
-              />
-            ))}
+      {STATEMENTS.map((stmt, i) => {
+        const chosen = answers[i]
+        const isRev = !!revealed[i]
+        return (
+          <div key={i} style={styles.stmt}>
+            <div style={styles.stmtText}>{stmt.text}</div>
+            <div style={styles.options}>
+              {['True', 'False', 'It Depends'].map(opt => {
+                const s = OPT_STYLES[opt]
+                const isChosen = chosen === opt
+                const isCorrect = opt === stmt.answer
+
+                let bg = 'rgba(255,255,255,0.06)'
+                let border = BORDER_SUBTLE
+                let color = TEXT_MUTED
+                let shadow = 'none'
+
+                if (isRev && isCorrect) { bg = `${s.grad}`; border = 'transparent'; color = '#fff'; shadow = `0 4px 16px ${s.glow}` }
+                else if (isRev && isChosen && !isCorrect) { bg = 'rgba(255,77,106,0.15)'; border = 'rgba(255,77,106,0.4)'; color = '#FF4D6A' }
+                else if (!isRev && isChosen) { bg = 'rgba(255,255,255,0.12)'; border = 'rgba(255,255,255,0.25)'; color = '#fff' }
+
+                return (
+                  <button
+                    key={opt}
+                    style={{
+                      ...styles.opt,
+                      background: bg,
+                      border: `1px solid ${border}`,
+                      color,
+                      boxShadow: shadow,
+                      cursor: isRev ? 'default' : 'pointer'
+                    }}
+                    onClick={() => choose(i, opt)}
+                    disabled={isRev}
+                  >
+                    {opt}
+                  </button>
+                )
+              })}
+            </div>
+            {isRev && (
+              <div style={styles.explanation}>{stmt.explanation}</div>
+            )}
           </div>
-          {revealed[i] && (
-            <div style={styles.explanation}>{stmt.explanation}</div>
-          )}
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
 
 const styles = {
-  game: { width: '100%', display: 'flex', flexDirection: 'column', gap: '14px' },
+  game: { width: '100%', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: FONT_BASE },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: '15px', fontWeight: '700', color: TEXT_PRIMARY },
-  progress: { fontSize: '12px', color: TEXT_MUTED },
+  title: { fontSize: '14px', fontWeight: '700', color: TEXT_PRIMARY },
+  prog: { fontSize: '12px', color: TEXT_MUTED },
+
   stmt: { display: 'flex', flexDirection: 'column', gap: '8px' },
   stmtText: { fontSize: '14px', color: TEXT_PRIMARY, lineHeight: '1.5', fontWeight: '500' },
+
   options: { display: 'flex', gap: '6px' },
-  option: {
-    flex: 1,
-    padding: '8px 4px',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.15s'
+  opt: {
+    flex: 1, padding: '9px 4px', border: '1px solid', borderRadius: RADIUS_SM,
+    fontSize: '11px', fontWeight: '700', transition: 'all 0.15s', letterSpacing: '0.2px'
   },
+
   explanation: {
-    fontSize: '12px',
-    color: TEXT_MUTED,
-    lineHeight: '1.5',
-    background: '#F5F9F7',
-    border: `1px solid ${BORDER}`,
-    borderRadius: '8px',
-    padding: '8px 10px'
+    fontSize: '12px', color: TEXT_SECONDARY, lineHeight: '1.55',
+    background: 'rgba(255,255,255,0.04)',
+    border: `1px solid ${BORDER_SUBTLE}`,
+    borderRadius: RADIUS_SM, padding: '9px 11px'
   }
 }

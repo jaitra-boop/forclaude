@@ -7,23 +7,58 @@ import { WORDS } from '../data/words'
 import { LESSONS } from '../data/lessons'
 import { GAMES } from '../data/games'
 import { WANDER } from '../data/wander'
-
-const BG = '#FAF7F2'
-const TEXT_MUTED = '#8A7D72'
+import {
+  BG_BASE, BORDER_SUBTLE,
+  TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED,
+  AMBER, GREEN,
+  RADIUS_MD, RADIUS_PILL, FONT_BASE
+} from '../theme'
 
 const dayIndex = Math.floor(Date.now() / 86400000)
-const todayWord = WORDS[dayIndex % WORDS.length]
+const todayWord   = WORDS[dayIndex % WORDS.length]
 const todayLesson = LESSONS[dayIndex % LESSONS.length]
-const todayGame = GAMES[dayIndex % GAMES.length]
+const todayGame   = GAMES[dayIndex % GAMES.length]
 const todayWander = WANDER[dayIndex % WANDER.length]
 
 function getToday() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function DropBar({ drops }) {
+  const pct = Math.min(100, (drops / 4) * 100)
+  return (
+    <div style={styles.dropRow}>
+      <div style={styles.dropLeft}>
+        <span style={styles.dropLabel}>Today's drops</span>
+        <span style={styles.dropVal}>{drops.toFixed(1)} / 4</span>
+      </div>
+      <div style={styles.track}>
+        {[0.5, 1, 2, 0.5].map((d, i) => {
+          const cumulative = [0.5, 1.5, 3.5, 4][i]
+          const filled = drops >= cumulative
+          return (
+            <div
+              key={i}
+              style={{
+                ...styles.segment,
+                flex: d,
+                background: filled
+                  ? 'linear-gradient(90deg,#7B2FF7,#2196F3)'
+                  : 'rgba(255,255,255,0.08)',
+                boxShadow: filled ? '0 0 8px rgba(123,47,247,0.4)' : 'none'
+              }}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function HomeView({ mode, appData, onDataUpdate }) {
   const today = getToday()
   const todayComp = appData?.completions?.[today] || {}
+  const drops = todayComp.drops || 0
 
   async function handleWordReveal() {
     if (todayComp.word) return
@@ -32,21 +67,18 @@ export default function HomeView({ mode, appData, onDataUpdate }) {
     await window.loupe.updateHistory(today, { word: todayWord.word })
     onDataUpdate(data)
   }
-
   async function handleLessonRead() {
     if (todayComp.lesson) return
     const data = await window.loupe.addDrop(1, 'lesson')
     await window.loupe.updateHistory(today, { lesson: todayLesson.title })
     onDataUpdate(data)
   }
-
   async function handleSparkComplete() {
     if (todayComp.spark) return
     const data = await window.loupe.addDrop(2, 'spark')
     await window.loupe.updateHistory(today, { spark: todayGame.title })
     onDataUpdate(data)
   }
-
   async function handleWanderOpen() {
     if (todayComp.wander) return
     const data = await window.loupe.addDrop(0.5, 'wander')
@@ -54,16 +86,9 @@ export default function HomeView({ mode, appData, onDataUpdate }) {
     onDataUpdate(data)
   }
 
-  const totalDropsToday = todayComp.drops || 0
-
   return (
     <div style={styles.view}>
-      <div style={styles.dropsBar}>
-        <span style={styles.dropsText}>{totalDropsToday} / 4 drops today</span>
-        <div style={styles.dropsTrack}>
-          <div style={{ ...styles.dropsFill, width: `${(totalDropsToday / 4) * 100}%` }} />
-        </div>
-      </div>
+      <DropBar drops={drops} />
 
       {mode === 'learn' && (
         <div style={styles.cards}>
@@ -109,38 +134,23 @@ export default function HomeView({ mode, appData, onDataUpdate }) {
 
 const styles = {
   view: {
-    flex: 1,
-    overflowY: 'auto',
-    background: '#FAF7F2',
-    padding: '16px'
+    flex: 1, overflowY: 'auto',
+    background: BG_BASE,
+    padding: '14px 16px 20px',
+    fontFamily: FONT_BASE
   },
-  dropsBar: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    marginBottom: '16px'
+  dropRow: {
+    display: 'flex', flexDirection: 'column', gap: '7px',
+    marginBottom: '18px',
+    padding: '12px 14px',
+    background: 'rgba(255,255,255,0.04)',
+    border: `1px solid ${BORDER_SUBTLE}`,
+    borderRadius: RADIUS_MD
   },
-  dropsText: {
-    fontSize: '11px',
-    color: TEXT_MUTED,
-    minWidth: '100px'
-  },
-  dropsTrack: {
-    flex: 1,
-    height: '4px',
-    background: '#E8DDD0',
-    borderRadius: '2px',
-    overflow: 'hidden'
-  },
-  dropsFill: {
-    height: '100%',
-    background: '#7BB8A0',
-    borderRadius: '2px',
-    transition: 'width 0.4s ease'
-  },
-  cards: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '18px'
-  }
+  dropLeft: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  dropLabel: { fontSize: '11px', color: TEXT_MUTED, fontWeight: '500', letterSpacing: '0.2px' },
+  dropVal: { fontSize: '12px', color: AMBER, fontWeight: '700' },
+  track: { display: 'flex', gap: '4px', height: '5px' },
+  segment: { borderRadius: RADIUS_PILL, transition: 'all 0.4s ease' },
+  cards: { display: 'flex', flexDirection: 'column', gap: '18px' }
 }
