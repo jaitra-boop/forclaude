@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — Origami</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <canvas id="cursor-canvas"></canvas>
+
+  <nav class="nav">
+    <span class="nav-name">Your Name</span>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-fold fold-1"></div>
+    <div class="hero-fold fold-2"></div>
+    <div class="hero-fold fold-3"></div>
+
+    <div class="hero-content">
+      <p class="hero-label">Designer &amp; Developer</p>
+      <h1 class="hero-title">
+        Crafting digital<br />
+        <span class="fold-text">experiences</span>
+      </h1>
+      <p class="hero-sub">with precision and care — like origami.</p>
+    </div>
+
+    <div class="crane-container" aria-hidden="true">
+      <svg class="crane" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Paper crane silhouette made of geometric polygons -->
+        <polygon class="crane-wing-l" points="10,110 80,70 70,130" />
+        <polygon class="crane-wing-r" points="190,110 120,70 130,130" />
+        <polygon class="crane-body"   points="80,70 120,70 100,130" />
+        <polygon class="crane-head"   points="100,70 115,50 100,60 85,50" />
+        <polygon class="crane-tail"   points="90,130 110,130 100,160" />
+        <!-- fold lines -->
+        <line class="fold-line" x1="80" y1="70" x2="100" y2="130" />
+        <line class="fold-line" x1="120" y1="70" x2="100" y2="130" />
+        <line class="fold-line" x1="100" y1="70" x2="100" y2="60" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="work" id="work">
+    <h2 class="section-label">Selected Work</h2>
+
+    <div class="projects">
+      <article class="project" data-index="01">
+        <div class="project-fold"></div>
+        <div class="project-content">
+          <span class="project-num">01</span>
+          <h3 class="project-title">Project One</h3>
+          <p class="project-desc">A brief description of this project and what makes it interesting. Design, development, or both.</p>
+          <div class="project-tags">
+            <span>UX Design</span><span>React</span>
+          </div>
+          <a class="project-link" href="#">View case study →</a>
+        </div>
+      </article>
+
+      <article class="project" data-index="02">
+        <div class="project-fold"></div>
+        <div class="project-content">
+          <span class="project-num">02</span>
+          <h3 class="project-title">Project Two</h3>
+          <p class="project-desc">Another project description highlighting the key outcome and your role in making it happen.</p>
+          <div class="project-tags">
+            <span>Branding</span><span>Motion</span>
+          </div>
+          <a class="project-link" href="#">View case study →</a>
+        </div>
+      </article>
+
+      <article class="project" data-index="03">
+        <div class="project-fold"></div>
+        <div class="project-content">
+          <span class="project-num">03</span>
+          <h3 class="project-title">Project Three</h3>
+          <p class="project-desc">The third showcase piece. Keep descriptions concise — let the work speak.</p>
+          <div class="project-tags">
+            <span>Full-Stack</span><span>TypeScript</span>
+          </div>
+          <a class="project-link" href="#">View case study →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2 class="section-label">About</h2>
+        <p>I'm a designer and developer who believes good work is like origami — each fold deliberate, each crease considered. The result only looks effortless.</p>
+        <p>Currently available for select projects.</p>
+      </div>
+
+      <div class="about-shape" aria-hidden="true">
+        <!-- Animated geometric fold -->
+        <svg class="geo" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="geo-a" points="150,20 280,200 150,160" />
+          <polygon class="geo-b" points="150,20 20,200 150,160" />
+          <polygon class="geo-c" points="20,200 280,200 150,160" />
+          <polygon class="geo-d" points="150,160 280,200 150,260" />
+          <polygon class="geo-e" points="150,160 20,200 150,260" />
+          <line class="fold-line" x1="150" y1="20" x2="150" y2="260" />
+          <line class="fold-line" x1="20" y1="200" x2="280" y2="200" />
+          <line class="fold-line" x1="150" y1="20" x2="20" y2="200" />
+          <line class="fold-line" x1="150" y1="20" x2="280" y2="200" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <p class="contact-pre">Let's make something</p>
+      <h2 class="contact-title">Together.</h2>
+      <a class="contact-email" href="mailto:hello@yourname.com">hello@yourname.com</a>
+
+      <div class="contact-links">
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Twitter</a>
+      </div>
+    </div>
+    <div class="contact-fold" aria-hidden="true"></div>
+  </section>
+
+  <footer class="footer">
+    <span>© 2026 Your Name</span>
+    <span>Made with care ✦</span>
+  </footer>
+
+  <script src="src/cursor.js"></script>
+  <script src="src/animations.js"></script>
+</body>
+</html>
