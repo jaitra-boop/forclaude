@@ -7,8 +7,8 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
-    "browser:dev": "vite src/renderer --port 3000 --open",
-    "browser:build": "vite build src/renderer --outDir ../../out/browser"
+    "browser:dev": "npx vite src/renderer --port 3000 --open",
+    "browser:build": "npx vite build src/renderer --outDir ../../out/browser"
   },
   "keywords": [],
   "author": "",
