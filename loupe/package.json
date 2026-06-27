@@ -7,7 +7,8 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
-    "start": "electron-vite dev"
+    "browser:dev": "vite src/renderer --port 3000 --open",
+    "browser:build": "vite build src/renderer --outDir ../../out/browser"
   },
   "keywords": [],
   "author": "",
@@ -16,11 +17,11 @@
     "@vitejs/plugin-react": "^6.0.3",
     "electron": "^42.5.0",
     "electron-vite": "^5.0.0",
+    "playwright": "^1.61.1",
     "vite": "^8.1.0"
   },
   "dependencies": {
     "node-cron": "^4.5.0",
-    "playwright": "^1.61.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
