@@ -164,7 +164,7 @@ export function duplicateScreen(p: Project, flowId: string, screenId: string): s
     const id = newId("el");
     idMap.set(e.id, id);
     const { linkTo: _drop, ...rest } = e;
-    return { ...rest, id, props: structuredClone(e.props) };
+    return { ...rest, id, props: JSON.parse(JSON.stringify(e.props)) as ElementProps };
   });
   const annotations = src.annotations.map((a) => ({
     ...a,
