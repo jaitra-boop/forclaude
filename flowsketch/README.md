@@ -8,11 +8,13 @@ A local tool for ideating UX flows as **low-fidelity, grayscale wireframes**. Pi
 cd flowsketch
 npm install
 cp .env.example .env        # optional: add ANTHROPIC_API_KEY
-npm run dev                 # starts the API (127.0.0.1:8787) and the app (http://localhost:5173)
+npm run dev                 # starts the API (127.0.0.1:8799) and the app at http://localhost:5199 (opens the browser)
 ```
 
+FlowSketch runs on its **own ports (5199 for the app, 8799 for the API)** so it never collides with another Vite app on the default 5173. If a port is taken, `npm run dev` stops with a clear message instead of silently moving; change `CLIENT_PORT` / `PORT` in `.env`. Set `NO_OPEN=1` to stop the browser opening automatically.
+
 - **No API key? Mock mode.** Generation returns the hand-written sample flow ("Invite a teammate", 6 screens, an error branch and an alternate branch, with annotations), and each refine action returns a small canned patch computed against your current flow. The whole UI works offline. The top bar shows a "Mock mode" badge.
-- `.env` settings: `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (default `claude-sonnet-5-5`, the latest Sonnet), `ANTHROPIC_FALLBACKS` (`default` turns on the API's server-side refusal fallback, `off` disables it), `PORT`.
+- `.env` settings: `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (default `claude-sonnet-5-5`, the latest Sonnet), `ANTHROPIC_FALLBACKS` (`default` turns on the API's server-side refusal fallback, `off` disables it), `PORT`, `CLIENT_PORT`.
 - The key is read only by the Node server (`server/index.ts`). The browser only talks to `/api/*` and never receives it.
 
 Other scripts: `npm test` (Vitest), `npm run typecheck`, `npm run build`.
