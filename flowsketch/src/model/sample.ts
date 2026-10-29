@@ -2,6 +2,7 @@
  * Seed personas and the hand-written "Invite a teammate" flow used in mock mode
  * (no API key) and as the starter project. Ids are fixed so tests can refer to them.
  */
+import { autoLayout } from "./layout";
 import type { Flow, Persona, Project } from "./schema";
 
 export const SEED_PERSONAS: Persona[] = [
@@ -159,6 +160,10 @@ export const SAMPLE_FLOW: Flow = {
     { id: "tr_seats_back", from: "scr_seats", to: "scr_members", trigger: 'Tap "Not now"', triggerElementId: "el_l_back", kind: "back", annotations: [] },
   ],
 };
+
+// Lay the sample out like a generated flow would be.
+const samplePositions = autoLayout(SAMPLE_FLOW);
+for (const s of SAMPLE_FLOW.screens) s.position = samplePositions[s.id] ?? s.position;
 
 export function sampleProject(): Project {
   return structuredClone({

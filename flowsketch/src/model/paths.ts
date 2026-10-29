@@ -94,8 +94,15 @@ export function enumeratePaths(flow: Flow, limit = 24): NamedPath[] {
     }
   };
   visit(start.id, new Set([start.id]), {}, []);
-  // Happy-only first, then by length.
-  return results.sort((a, b) => score(a) - score(b) || a.screenIds.length - b.screenIds.length);
+  // Happy-only first, then by length; disambiguate repeated names.
+  results.sort((a, b) => score(a) - score(b) || a.screenIds.length - b.screenIds.length);
+  const seen = new Map<string, number>();
+  for (const r of results) {
+    const n = (seen.get(r.label) ?? 0) + 1;
+    seen.set(r.label, n);
+    if (n > 1) r.label = `${r.label} #${n}`;
+  }
+  return results;
 }
 
 function score(p: NamedPath): number {

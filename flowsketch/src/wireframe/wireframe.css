@@ -21,10 +21,10 @@
 .wf-chrome { height: 18px; border-bottom: 1px solid var(--wf-g300); display: flex; align-items: center; gap: 4px; padding: 0 8px; flex: none; }
 .wf-chrome i { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--wf-g500); display: block; }
 .wf-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-.wf-kind-tag { position: absolute; top: 2px; right: 8px; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; color: var(--wf-g700); }
+.wf-kind-tag { position: absolute; bottom: 2px; right: 8px; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; color: var(--wf-g700); }
 
 .wf-row { display: flex; gap: 8px; align-items: stretch; }
-.wf-row > .wf-el-wrap { flex: 1; min-width: 0; }
+.wf-row > * { flex: 1; min-width: 0; }
 .wf-el-wrap { position: relative; border-radius: 4px; outline-offset: 2px; }
 .wf-el-wrap.wf-clickable { cursor: pointer; }
 .wf-el-wrap.wf-clickable:hover { outline: 1px dashed var(--wf-g500); }
@@ -75,8 +75,8 @@
 .wf-error { border: 1.5px dashed var(--wf-ink); padding: 5px 8px; font-weight: 700; display: flex; gap: 6px; }
 .wf-error::before { content: "!"; width: 16px; height: 16px; border: 1.5px solid var(--wf-ink); border-radius: 50%; display: grid; place-items: center; font-size: 11px; flex: none; }
 
-.wf-pin { position: absolute; top: -7px; right: -7px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--wf-g700); color: var(--wf-paper); font-size: 10px; font-weight: 700; display: grid; place-items: center; z-index: 2; font-family: var(--wf-font); border: 1.5px solid var(--wf-paper); cursor: pointer; }
+.wf-pin { position: absolute; top: -8px; right: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--wf-g700); color: var(--wf-paper); font-size: 10px; font-weight: 700; display: grid; place-items: center; z-index: 2; font-family: var(--wf-font); border: 1.5px solid var(--wf-paper); cursor: pointer; }
 .wf-pin.wf-pin-selected { outline: 2px dashed var(--wf-ink); outline-offset: 1px; }
-.wf-screen-pins { position: absolute; top: 22px; right: 6px; display: flex; gap: 3px; z-index: 2; }
+.wf-screen-pins { position: absolute; top: 4px; right: 4px; display: flex; gap: 3px; z-index: 2; }
 .wf-screen-pins .wf-pin { position: static; }
 .wf-empty { color: var(--wf-g500); font-style: italic; text-align: center; padding: 20px 0; border: 1px dashed var(--wf-g300); }

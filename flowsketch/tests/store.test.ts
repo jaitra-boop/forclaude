@@ -113,11 +113,12 @@ describe("undo / redo", () => {
   });
 
   it("coalesces a drag into one undo step", () => {
-    for (let i = 1; i <= 10; i++) actions.moveScreen("scr_sent", { x: 900 + i * 10, y: 0 });
-    expect(screen("scr_sent").position.x).toBe(1000);
+    const start = screen("scr_sent").position;
+    for (let i = 1; i <= 10; i++) actions.moveScreen("scr_sent", { x: 5000 + i * 10, y: 0 });
+    expect(screen("scr_sent").position.x).toBe(5100);
     expect(useStore.getState().past).toHaveLength(1);
     actions.undo();
-    expect(screen("scr_sent").position.x).toBe(840);
+    expect(screen("scr_sent").position).toEqual(start);
   });
 
   it("coalesces typing in the same field, but not across fields", () => {

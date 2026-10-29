@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* App chrome: neutral grays only. Emphasis = black outlines, dashed selection, dark-gray pins. */
+:root {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #1c1c1c;
+  background: #f4f4f4;
+}
+html, body, #root { height: 100%; margin: 0; }
+* { box-shadow: none !important; }
+
+@layer components {
+  .fs-btn {
+    @apply inline-flex items-center gap-1 rounded border border-neutral-400 bg-white px-2 py-1 text-xs font-medium text-neutral-800 hover:border-neutral-900 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .fs-btn-primary { @apply border-neutral-900 bg-neutral-900 text-white hover:bg-neutral-700; }
+  .fs-btn-on { @apply border-neutral-900 bg-neutral-900 text-white; }
+  .fs-input {
+    @apply w-full rounded border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-900 outline-none focus:border-neutral-900;
+  }
+  .fs-label { @apply mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-neutral-500; }
+  .fs-section { @apply border-b border-neutral-200 p-3; }
+  .fs-h { @apply mb-2 text-[11px] font-bold uppercase tracking-wider text-neutral-600; }
+  .fs-chip { @apply inline-flex items-center gap-1 rounded-full border border-neutral-400 bg-white px-2 py-0.5 text-[11px] text-neutral-700 hover:border-neutral-900; }
+}
+
+.fs-handle-quiet { opacity: 0; }
+.react-flow__node:hover .fs-handle-quiet, .react-flow__node.selected .fs-handle-quiet { opacity: 1; }
+.fs-handle { width: 10px !important; height: 10px !important; background: #fff !important; border: 1.5px solid #1c1c1c !important; }
+.react-flow__node.selected, .react-flow__node:focus { outline: none; }
+.react-flow__controls button { background: #fff; border-color: #c4c4c4; }
+:focus-visible { outline: 2px dashed #1c1c1c; outline-offset: 2px; }

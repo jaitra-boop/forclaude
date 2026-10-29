@@ -12,7 +12,7 @@ export function nodeSize(platform: Platform): { width: number; height: number } 
 
 export function autoLayout(flow: Flow): Record<string, Position> {
   const g = new dagre.graphlib.Graph({ multigraph: true });
-  g.setGraph({ rankdir: "LR", nodesep: 70, ranksep: 140, marginx: 20, marginy: 20 });
+  g.setGraph({ rankdir: "LR", nodesep: 90, ranksep: 220, marginx: 20, marginy: 20 });
   g.setDefaultEdgeLabel(() => ({}));
   const { width, height } = nodeSize(flow.platform);
   for (const s of flow.screens) g.setNode(s.id, { width, height });
