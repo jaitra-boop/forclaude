@@ -12,7 +12,7 @@ import { loadContext } from "./context";
 import { generateStructured, LlmError, type LlmClient } from "./llm";
 import { mockGenerate, mockRefine } from "./mock";
 import { generateSystemPrompt, generateUserPrompt, refineSystemPrompt, refineUserPrompt } from "./prompts";
-import { ProjectFileError, ProjectStore } from "./projects";
+import { PROJECT_NAME, ProjectFileError, ProjectStore } from "./projects";
 
 export interface AppDeps {
   /** null = mock mode */
@@ -44,6 +44,9 @@ export function createApp(deps: AppDeps) {
   const app = express();
   const projects = new ProjectStore(deps.projectsDir);
   app.use(express.json({ limit: "10mb" }));
+  app.param("name", (_req, _res, next, name: string) => {
+    next(PROJECT_NAME.test(name) ? undefined : new BadRequest(["Project names may only use letters, digits, spaces, - and _"]));
+  });
 
   app.get("/api/health", asyncRoute(async (_req, res) => {
     const files = await loadContext(deps.contextDir);

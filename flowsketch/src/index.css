@@ -2,6 +2,7 @@
 
 /* App chrome: neutral grays only. Emphasis = black outlines, dashed selection, dark-gray pins. */
 :root {
+  accent-color: #1c1c1c;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: #1c1c1c;
   background: #f4f4f4;

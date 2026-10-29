@@ -7,7 +7,8 @@ import type { Flow, Platform, Position } from "./schema";
 
 /** Flow-view node footprint (thumbnail + title), shared with the flow node renderer. */
 export function nodeSize(platform: Platform): { width: number; height: number } {
-  return platform === "mobile" ? { width: 190, height: 380 } : { width: 300, height: 250 };
+  // Title row (24px) + wireframe min-height scaled by the thumbnail factor (0.55 mobile, 0.44 desktop).
+  return platform === "mobile" ? { width: 190, height: 24 + Math.round(560 * 0.55) } : { width: 300, height: 24 + Math.round(400 * 0.44) };
 }
 
 export function autoLayout(flow: Flow): Record<string, Position> {
